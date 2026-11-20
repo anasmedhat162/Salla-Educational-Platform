@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="icon.png">
+  <meta name="description" content="منصة تعليمية لإدارة الدروس والاختبارات ومتابعة الطلاب والمعلمين.">
+  <meta name="theme-color" content="#3157d5">
+
+  <title> منصة سلا التعليمية </title>
+  <style>
+    /* =========================================
+       1. تنسيقات عامة وأساسية
+       ========================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; }
+    .hidden { display: none !important; }
+
+    /* =========================================
+       2. شريط التنقل العلوي (Navbar)
+       ========================================= */
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      background-color: #ffffff; padding: 15px 50px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.06);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    .logo a { text-decoration: none; font-size: 22px; font-weight: 800; color: #2563eb; cursor: pointer; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-links a { text-decoration: none; color: #334155; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active-link { color: #2563eb; }
+    .auth-buttons { display: flex; align-items: center; gap: 15px; }
+    .btn-login { text-decoration: none; color: #2563eb; font-weight: 600; font-size: 15px; cursor: pointer; }
+    .btn-signup {
+      text-decoration: none; background-color: #2563eb; color: #ffffff;
+      font-weight: 600; font-size: 15px; padding: 10px 20px; border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(37, 99, 235, 0.25); cursor: pointer; transition: 0.3s;
+    }
+    .btn-signup:hover { background-color: #1d4ed8; }
+
+    /* =========================================
+       3. تنسيقات الصفحة الرئيسية (Home View)
+       ========================================= */
+    .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 50px; max-width: 1300px; margin: 0 auto; gap: 40px; min-height: 75vh; }
+    .hero-content { flex: 1; max-width: 600px; }
+    .hero-content h1 { font-size: 42px; line-height: 1.3; margin-bottom: 20px; font-weight: 800; }
+    .hero-content p { font-size: 18px; color: #475569; line-height: 1.7; margin-bottom: 35px; }
+    .hero-buttons { display: flex; gap: 15px; }
+    .btn-primary { text-decoration: none; background-color: #2563eb; color: #fff; font-size: 16px; font-weight: 600; padding: 14px 30px; border-radius: 10px; box-shadow: 0 6px 15px rgba(37,99,235,0.3); cursor: pointer; border: none; }
+    .btn-primary:hover { background-color: #1d4ed8; }
+    .btn-secondary { text-decoration: none; background-color: #fff; color: #2563eb; border: 2px solid #2563eb; font-size: 16px; font-weight: 600; padding: 12px 28px; border-radius: 10px; cursor: pointer; }
+    .btn-secondary:hover { background-color: #eff6ff; }
+    .hero-image { flex: 1; display: flex; justify-content: center; }
+    .hero-image img { width: 100%; max-width: 500px; border-radius: 20px; box-shadow: -10px 15px 30px rgba(0,0,0,0.08); }
+
+    .stats-section { padding: 20px 50px; max-width: 1100px; margin: 0 auto 60px auto; }
+    .stats-container { display: flex; justify-content: space-around; align-items: center; background: #fff; padding: 35px 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .stat-item { text-align: center; flex: 1; }
+    .stat-item h3 { font-size: 36px; font-weight: 800; color: #2563eb; margin-bottom: 8px; }
+    .stat-item p { font-size: 16px; font-weight: 600; color: #64748b; }
+    .stat-divider { width: 1px; height: 50px; background-color: #e2e8f0; }
+
+    .section-container { padding: 60px 50px; max-width: 1300px; margin: 0 auto; }
+    .section-header { text-align: center; max-width: 650px; margin: 0 auto 45px auto; }
+    .section-header h2 { font-size: 34px; font-weight: 800; margin-bottom: 12px; }
+    .section-header p { font-size: 17px; color: #64748b; line-height: 1.6; }
+
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+    .card-box { background: #fff; padding: 30px 25px; border-radius: 16px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; }
+    .card-box:hover { transform: translateY(-6px); box-shadow: 0 15px 30px rgba(37,99,235,0.12); }
+    .feature-icon { width: 65px; height: 65px; background: #eff6ff; color: #2563eb; font-size: 30px; display: flex; align-items: center; justify-content: center; border-radius: 14px; margin: 0 auto 20px auto; }
+    .step-number { width: 55px; height: 55px; background: #2563eb; color: #fff; font-size: 24px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; }
+
+    /* =========================================
+       4. بطاقات المعلمين والبحث
+       ========================================= */
+    .search-header { background: #fff; padding: 45px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+    .search-input { width: 100%; max-width: 550px; padding: 14px 20px; font-size: 16px; border: 2px solid #cbd5e1; border-radius: 12px; outline: none; margin: 20px auto; display: block; }
+    .filter-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .filter-btn { padding: 8px 18px; border: 1px solid #cbd5e1; background: #fff; color: #475569; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .filter-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .teacher-avatar { width: 80px; height: 80px; background: #2563eb; color: #fff; font-size: 32px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; }
+    .subject-badge { display: inline-block; background: #eff6ff; color: #2563eb; font-size: 14px; font-weight: 600; padding: 5px 14px; border-radius: 20px; margin: 10px 0; }
+
+    /* =========================================
+       5. بوابات التسجيل ولوحات التحكم
+       ========================================= */
+    .gate-wrapper { display: flex; justify-content: center; align-items: center; min-height: 85vh; padding: 30px 20px; }
+    .auth-container { background: #fff; width: 100%; max-width: 480px; padding: 40px 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .auth-tabs { display: flex; background: #f1f5f9; border-radius: 10px; padding: 5px; margin-bottom: 25px; }
+    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: #64748b; border-radius: 8px; cursor: pointer; }
+    .tab-btn.active { background: #fff; color: #2563eb; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .form-group { margin-bottom: 16px; text-align: right; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
+    .btn-submit { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background: #1d4ed8; }
+
+    .dashboard-wrapper { display: flex; min-height: 90vh; }
+    .sidebar { width: 260px; background: #1e293b; color: #fff; padding: 25px 20px; display: flex; flex-direction: column; justify-content: space-between; }
+    .nav-menu { list-style: none; }
+    .nav-menu li { margin-bottom: 10px; }
+    .nav-menu button { width: 100%; text-align: right; background: transparent; border: none; color: #cbd5e1; padding: 12px 15px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .nav-menu button:hover, .nav-menu button.active { background-color: #2563eb; color: #fff; }
+    .logout-btn { background: #ef4444; color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-size: 15px; border: none; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; }
+    .main-content { flex: 1; padding: 30px 40px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 30px; }
+    .dash-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 20px; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 12px; }
+    .lesson-link { display: inline-block; margin-top: 8px; margin-left: 10px; background: #fff; border: 1px solid #cbd5e1; padding: 7px 14px; border-radius: 8px; color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px; }
+
+    /* =========================================
+       6. التذييل (Footer) والتجاوب
+       ========================================= */
+    .footer { background-color: #1e293b; color: #f8fafc; padding-top: 50px; }
+    .footer-container { display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 40px; max-width: 1250px; margin: 0 auto; padding: 0 50px 40px 50px; }
+    .footer-bottom { background-color: #0f172a; text-align: center; padding: 20px; font-size: 14px; color: #94a3b8; }
+
+    @media (max-width: 900px) {
+      .navbar { padding: 15px 20px; flex-wrap: wrap; gap: 15px; }
+      .hero { flex-direction: column; text-align: center; padding: 40px 20px; }
+      .hero-buttons { justify-content: center; }
+      .grid-4, .grid-3, .stats-container, .footer-container { grid-template-columns: 1fr; flex-direction: column; gap: 20px; }
+
+      .footer-container { display: grid; }
+      .stat-divider { display: block; }
+      .dashboard-wrapper { flex-direction: row; }
+    }
+
+    @media (max-width: 700px) {
+      .navbar { justify-content: center; }
+      .nav-links { order: 3; width: 100%; justify-content: center; gap: 14px; flex-wrap: wrap; }
+      .auth-buttons { gap: 8px; }
+      .hero-content h1 { font-size: 32px; }
+      .section-container, .stats-section { padding-left: 20px; padding-right: 20px; }
+      .grid-4, .grid-3 { grid-template-columns: 1fr; }
+      .stats-container { flex-direction: column; gap: 20px; }
+      .stat-divider { width: 80%; height: 1px; }
+      .dashboard-wrapper { flex-direction: column; }
+      .sidebar { width: 100%; }
+      .main-content { padding: 20px; }
+      .topbar { flex-direction: column; gap: 12px; text-align: center; }
+      .item-row { flex-direction: column; align-items: stretch; gap: 10px; }
+      .hero-buttons { flex-direction: column; }
+    }
+
+    /* صفحة تفاصيل الدرس */
+    .lesson-details-wrap{max-width:1100px;margin:0 auto;padding:30px 20px;}
+    .lesson-details-card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(15,23,42,.06);}
+    .lesson-details-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap;margin-bottom:25px;}
+    .lesson-details-head h1{font-size:30px;color:#0f172a;margin-bottom:8px;}
+    .lesson-details-desc{color:#64748b;line-height:1.9;}
+    .lesson-media-section{margin-top:28px;padding-top:24px;border-top:1px solid #e2e8f0;}
+    .lesson-media-section h3{margin-bottom:14px;color:#0f172a;}
+    .lesson-video-player{width:100%;max-height:560px;border-radius:14px;background:#0f172a;display:block;}
+    .lesson-pdf-frame{width:100%;height:650px;border:1px solid #e2e8f0;border-radius:12px;margin-top:15px;background:#f8fafc;}
+    .lesson-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px;}
+    .lesson-back-btn{margin-bottom:18px;}
+    .lesson-empty{padding:18px;border-radius:12px;background:#f8fafc;color:#64748b;}
+  
+.quiz-question-box{margin:18px 0;padding:22px;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;}
+.quiz-question-box h3{margin-bottom:12px;color:#2563eb;}
+.quiz-question-box p{line-height:1.9;margin-bottom:18px;font-size:18px;}
+.quiz-question-box input,.quiz-question-box textarea,.quiz-question-box select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:16px;outline:none;box-sizing:border-box;}
+.quiz-question-box input:focus,.quiz-question-box textarea:focus{border-color:#6684ed;box-shadow:0 0 0 4px rgba(49,87,213,.1);}
+#quizQuestionsBuilder .quiz-question-box{background:#fff;}
+</style>
+
+<style id="professional-upgrade">
+:root{
+  --brand:#3157d5;--brand-dark:#2444b5;--ink:#172033;--muted:#64748b;
+  --surface:#fff;--page:#f4f7fc;--line:#e6ebf3;--shadow:0 14px 40px rgba(22,34,66,.08);
+}
+body{background:var(--page);color:var(--ink);font-family:"Cairo","Segoe UI",Tahoma,sans-serif}
+button,input,select,textarea{font:inherit}
+button,a{transition:all .2s ease}
+.navbar{padding:14px clamp(16px,4vw,64px);background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);box-shadow:0 5px 24px rgba(20,35,70,.04)}
+.logo a{letter-spacing:-.5px;font-size:21px}
+.nav-links a{padding:9px 12px;border-radius:9px}
+.nav-links a:hover,.nav-links a.active-link{background:#edf2ff}
+.btn-primary,.btn-signup,.btn-submit{background:linear-gradient(135deg,var(--brand),#5277ed);box-shadow:0 8px 18px rgba(49,87,213,.2)}
+.btn-primary:hover,.btn-signup:hover,.btn-submit:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.btn-secondary{border-color:#cbd6f6}
+.hero{max-width:1400px;min-height:68vh;padding-top:75px;padding-bottom:75px}
+.hero-content h1{font-size:clamp(32px,4vw,54px);letter-spacing:-1.2px;color:#15213b}
+.hero-content p{max-width:570px;color:#66738a}
+.hero-image>div{position:relative;overflow:hidden;background:radial-gradient(circle at 30% 20%,#fff 0,#e7efff 42%,#cddcff 100%)!important}
+.hero-image>div:after{content:"";position:absolute;width:210px;height:210px;border:24px solid rgba(49,87,213,.12);border-radius:50%;right:-50px;bottom:-75px}
+.stats-container,.card-box,.auth-container,.dash-box,.topbar{border:1px solid var(--line);box-shadow:var(--shadow)}
+.stats-container{padding:30px 18px}
+.stat-item h3{font-size:clamp(28px,3vw,38px)}
+.section-container{padding-top:75px;padding-bottom:75px}
+.section-header h2{color:#182541;letter-spacing:-.5px}
+.section-header p{color:#748198}
+.card-box{border-radius:18px;padding:30px 24px}
+.card-box:hover{border-color:#cbd7ff;transform:translateY(-5px);box-shadow:0 18px 38px rgba(49,87,213,.12)}
+.feature-icon{border-radius:18px;background:linear-gradient(145deg,#edf3ff,#dce7ff)}
+.search-header{padding:55px 20px;background:linear-gradient(180deg,#fff,#f7f9ff)}
+.search-input{max-width:650px;border-color:#dbe2ee;box-shadow:0 5px 18px rgba(20,35,70,.04)}
+.search-input:focus,.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#6684ed;box-shadow:0 0 0 4px rgba(49,87,213,.1)}
+.filter-btn{padding:9px 17px}
+.gate-wrapper{min-height:78vh;background:radial-gradient(circle at top,#eaf0ff,transparent 55%)}
+.auth-container{border-radius:22px;padding:clamp(24px,5vw,42px)}
+.auth-container h2{color:#1c2a49}
+.form-group input,.form-group select,.form-group textarea{border-color:#dce3ef;background:#fbfcff}
+.btn-submit{border-radius:11px}
+.dashboard-wrapper{background:#f4f7fc;gap:0}
+.sidebar{background:linear-gradient(180deg,#182747,#111d36);padding:28px 18px}
+.sidebar h2{font-size:21px}
+.nav-menu button{border-radius:11px;padding:13px 14px}
+.nav-menu button:hover,.nav-menu button.active{background:linear-gradient(100deg,#3157d5,#4b70e5)}
+.main-content{min-width:0;padding:clamp(18px,3vw,38px)}
+.topbar{border-radius:16px}
+.dash-box{border-radius:16px}
+.item-row{background:#fff;border-color:#e7ecf4;gap:15px}
+.subject-badge{border-radius:8px}
+.teacher-avatar{background:linear-gradient(145deg,#3157d5,#7391f3);box-shadow:0 8px 18px rgba(49,87,213,.2)}
+.footer{background:#14213d}
+.footer-bottom{background:#0c162b}
+.hidden{display:none!important}
+@media(max-width:900px){
+ .dashboard-wrapper{flex-direction:column}
+ .sidebar{width:100%}
+ .nav-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .nav-menu li{margin:0}
+ .logout-btn{max-width:220px}
+ .main-content{width:100%}
+}
+@media(max-width:600px){
+ .navbar{gap:10px}
+ .nav-links{gap:4px}
+ .nav-links a{font-size:14px;padding:7px 9px}
+ .auth-buttons{justify-content:center}
+ .hero{padding-top:45px}
+ .hero-content h1{font-size:32px}
+ .stats-container{border-radius:16px}
+ .stat-divider{width:70%;height:1px}
+ .nav-menu{grid-template-columns:1fr 1fr}
+ .nav-menu button{font-size:13px;padding:11px 8px}
+ .topbar{padding:18px}
+ .footer-container{padding-left:22px;padding-right:22px}
+}
+
+.quiz-question-box{margin:18px 0;padding:22px;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;}
+.quiz-question-box h3{margin-bottom:12px;color:#2563eb;}
+.quiz-question-box p{line-height:1.9;margin-bottom:18px;font-size:18px;}
+.quiz-question-box input,.quiz-question-box textarea,.quiz-question-box select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:16px;outline:none;box-sizing:border-box;}
+.quiz-question-box input:focus,.quiz-question-box textarea:focus{border-color:#6684ed;box-shadow:0 0 0 4px rgba(49,87,213,.1);}
+#quizQuestionsBuilder .quiz-question-box{background:#fff;}
+</style>
+
+</head>
+<body>
+  <a href="#homeView" style="position:absolute;right:-9999px;top:auto;" onfocus="this.style.right='12px'" onblur="this.style.right='-9999px'">انتقل إلى المحتوى</a>
+
+  <nav class="navbar">
+    <div class="logo"><a href="#" onclick="showView('home');return false;"> منصة سلا التعليمية </a></div>
+    <div class="nav-links">
+      <a id="navHome" class="active-link" href="#" onclick="showView('home');return false;">الرئيسية</a>
+      <a href="#" onclick="showView('teachers');return false;">المعلمون</a>
+      <a href="#" onclick="showView('about');return false;">عن المنصة</a>
+    </div>
+    <div class="auth-buttons" id="authButtons">
+      <a class="btn-login" href="#" onclick="showView('auth');return false;">تسجيل الدخول</a>
+      <a class="btn-signup" href="#" onclick="showView('auth');return false;">إنشاء حساب</a>
+    </div>
+  </nav>
+
+  <main>
+
+
+
+    <!-- الصفحة الرئيسية -->
+    <section id="homeView">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>منصة تعليمية تجمع <span style="color:#2563eb;">المعلم والطالب</span> في مكان واحد</h1>
+          <p>منصة بسيطة ومنظمة تساعد المعلمين على تقديم الدروس والاختبارات، وتساعد الطلاب على متابعة تعلمهم ودرجاتهم بسهولة.</p>
+          <div class="hero-buttons">
+            <button class="btn-primary" onclick="showView('auth')">ابدأ الآن</button>
+            <button class="btn-secondary" onclick="showView('teachers')">استكشف المعلمين</button>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div style="width:100%;max-width:500px;min-height:300px;border-radius:20px;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;font-size:110px;box-shadow:-10px 15px 30px rgba(0,0,0,.08);"> <img src="icon.png" alt="ايقون الموقع "> </div>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stats-container">
+          <div class="stat-item"><h3 id="studentCount">0</h3><p>طلاب</p></div>
+          <div class="stat-divider"></div>
+          <div class="stat-item"><h3 id="teacherCount">0</h3><p>معلمون</p></div>
+          <div class="stat-divider"></div>
+          <div class="stat-item"><h3 id="lessonCount">0</h3><p>دروس</p></div>
+        </div>
+      </div>
+
+      <section class="section-container">
+        <div class="section-header">
+          <h2>كيف تعمل المنصة؟</h2>
+          <p>ثلاث خطوات بسيطة للبدء في استخدام المنصة.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card-box"><div class="step-number">1</div><h3>أنشئ حسابك</h3><p>اختر هل أنت طالب أم معلم ثم أنشئ حسابًا.</p></div>
+          <div class="card-box"><div class="step-number">2</div><h3>ابدأ التعلم</h3><p>الطالب يستطيع متابعة الدروس والاختبارات المتاحة.</p></div>
+          <div class="card-box"><div class="step-number">3</div><h3>تابع التقدم</h3><p>يمكن للطالب مشاهدة درجاته ويمكن للمعلم متابعة طلابه.</p></div>
+        </div>
+      </section>
+
+      <section class="section-container" style="background:#fff;">
+        <div class="section-header">
+          <h2>مميزات المنصة</h2>
+          <p>أدوات أساسية لتسهيل العملية التعليمية.</p>
+        </div>
+        <div class="grid-4">
+          <div class="card-box"><div class="feature-icon">📚</div><h3>الدروس</h3><p>تنظيم الدروس والمواد التعليمية.</p></div>
+          <div class="card-box"><div class="feature-icon">📝</div><h3>الاختبارات</h3><p>إنشاء اختبارات ومتابعة النتائج.</p></div>
+          <div class="card-box"><div class="feature-icon">📊</div><h3>الدرجات</h3><p>عرض نتائج الطالب بطريقة واضحة.</p></div>
+          <div class="card-box"><div class="feature-icon">👨‍🏫</div><h3>المعلمون</h3><p>البحث عن المعلمين حسب المادة.</p></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- صفحة المعلمين -->
+    <section id="teachersView" class="hidden">
+      <div class="search-header">
+        <h1>ابحث عن معلم</h1>
+        <p style="color:#64748b;margin-top:10px;">اختر المادة أو ابحث باسم المعلم.</p>
+        <input id="teacherSearch" class="search-input" type="text" placeholder="ابحث باسم المعلم أو المادة..." oninput="renderTeachers()">
+        <div class="filter-buttons">
+          <button class="filter-btn active" onclick="setFilter('الكل',this)">الكل</button>
+          <button class="filter-btn" onclick="setFilter('رياضيات',this)">رياضيات</button>
+          <button class="filter-btn" onclick="setFilter('لغة عربية',this)">لغة عربية</button>
+          <button class="filter-btn" onclick="setFilter('لغة إنجليزية',this)">لغة إنجليزية</button>
+          <button class="filter-btn" onclick="setFilter('علوم',this)">علوم</button>
+          <button class="filter-btn" onclick="setFilter('برمجة',this)">برمجة</button>
+        </div>
+      </div>
+      <div class="section-container">
+        <div id="teachersGrid" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- عن المنصة -->
+    <section id="aboutView" class="hidden">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>عن المنصة</h2>
+          <p>منصة تعليمية تجريبية تجمع بين إدارة الدروس والطلاب والمعلمين في واجهة واحدة.</p>
+        </div>
+        <div class="card-box" style="max-width:800px;margin:auto;text-align:right;">
+          <h3 style="margin-bottom:15px;">ما الهدف من المنصة؟</h3>
+          <p style="line-height:2;color:#475569;">
+            الهدف هو توفير نموذج واضح لمنصة تعليمية يمكن تطويرها لاحقًا بإضافة قاعدة بيانات حقيقية،
+            تسجيل دخول آمن، رفع ملفات، فيديوهات، اختبارات إلكترونية، ونظام درجات متكامل.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- التسجيل والدخول -->
+    <section id="authView" class="hidden">
+      <div class="gate-wrapper">
+        <div class="auth-container">
+          <h2 id="authTitle" style="text-align:center;margin-bottom:20px;">تسجيل الدخول</h2>
+          <div class="auth-tabs">
+            <button id="loginTab" class="tab-btn active" onclick="switchAuth('login')">تسجيل الدخول</button>
+            <button id="registerTab" class="tab-btn" onclick="switchAuth('register')">إنشاء حساب</button>
+          </div>
+
+          <form id="loginForm" onsubmit="login(event)">
+            <div class="form-group">
+              <label>البريد الإلكتروني</label>
+              <input id="loginEmail" type="email" required placeholder="example@email.com">
+            </div>
+            <div class="form-group">
+              <label>كلمة المرور</label>
+              <input id="loginPassword" type="password" required>
+            </div>
+            <button class="btn-submit" type="submit">دخول</button>
+          </form>
+
+          <form id="registerForm" class="hidden" onsubmit="register(event)">
+            <div class="form-group">
+              <label>الاسم</label>
+              <input id="regName" type="text" required placeholder="اكتب اسمك">
+            </div>
+            <div class="form-group">
+              <label>البريد الإلكتروني</label>
+              <input id="regEmail" type="email" required>
+            </div>
+            <div class="form-group">
+              <label>كلمة المرور</label>
+              <input id="regPassword" type="password" minlength="4" required>
+            </div>
+            <div class="form-group">
+              <label>نوع الحساب</label>
+              <select id="regRole" required>
+                <option value="">-- اختر نوع الحساب --</option>
+                <option value="student">طالب</option>
+                <option value="teacher">معلم</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>المادة</label>
+              <select id="regSubject">
+                <option value="">اختر المادة</option>
+                <option>رياضيات</option>
+                <option>لغة عربية</option>
+                <option>لغة إنجليزية</option>
+                <option>علوم</option>
+                <option>برمجة</option>
+              </select>
+            </div>
+            <button class="btn-submit" type="submit">إنشاء الحساب</button>
+          </form>
+
+          <p id="authMessage" style="text-align:center;margin-top:15px;font-weight:600;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- لوحة الطالب -->
+    <section id="studentDashboard" class="hidden">
+      <div class="dashboard-wrapper">
+        <aside class="sidebar">
+          <div>
+            <h2 style="margin-bottom:25px;">لوحة الطالب</h2>
+            <ul class="nav-menu">
+              <li><button class="active" onclick="studentPanel('overview',this)">🏠 الرئيسية</button></li>
+              <li><button onclick="studentPanel('lessons',this)">📚 دروسي</button></li>
+              <li><button onclick="studentPanel('quizzes',this)">📝 الاختبارات</button></li>
+              <li><button onclick="studentPanel('grades',this)">📊 درجاتي</button></li>
+              <li><button onclick="studentPanel('profile',this)">👤 حسابي</button></li>
+            </ul>
+          </div>
+          <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        </aside>
+        <div class="main-content">
+          <div class="topbar"><div><h2 id="studentWelcome">مرحبًا</h2><p style="color:#64748b;">هذه لوحة التحكم الخاصة بك.</p></div><div>🎓 طالب</div></div>
+          <div id="studentOverview" class="dash-box">
+            <h3>ملخص التعلم</h3>
+            <div class="grid-3" style="margin-top:20px;">
+              <div class="card-box"><h3 id="myLessonsCount">0</h3><p>دروس</p></div>
+              <div class="card-box"><h3 id="myQuizCount">0</h3><p>اختبارات</p></div>
+              <div class="card-box"><h3 id="myGrade">0%</h3><p>متوسط الدرجات</p></div>
+            </div>
+          </div>
+          <div id="studentLessons" class="dash-box hidden"><h3>دروسي</h3><div id="studentLessonsList" style="margin-top:20px;"></div></div>
+          <div id="studentQuizzes" class="dash-box hidden"><h3>الاختبارات</h3><div id="studentQuizzesList" style="margin-top:20px;"></div></div>
+          <div id="studentGrades" class="dash-box hidden"><h3>درجاتي</h3><div id="studentGradesList" style="margin-top:20px;"></div></div>
+          <div id="studentProfile" class="dash-box hidden"><h3>بيانات الحساب</h3><div id="studentProfileData" style="margin-top:20px;line-height:2;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- صفحة مستقلة لتفاصيل الدرس -->
+    <section id="lessonDetailsView" class="hidden">
+      <div class="lesson-details-wrap">
+        <button class="btn-secondary lesson-back-btn" onclick="backToStudentLessons()">← العودة إلى الدروس</button>
+        <div class="lesson-details-card">
+          <div class="lesson-details-head">
+            <div>
+              <h1 id="lessonDetailsTitle">عنوان الدرس</h1>
+              <p id="lessonDetailsDesc" class="lesson-details-desc">وصف الدرس</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <span id="lessonDetailsTeacher" class="subject-badge">المعلم</span>
+              <span id="lessonDetailsSubject" class="subject-badge">المادة</span>
+            </div>
+          </div>
+          <div id="lessonDetailsContent">
+            <div class="lesson-empty">جارٍ تحميل محتوى الدرس...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- صفحة مستقلة لحل الاختبار -->
+    <section id="quizDetailsView" class="hidden">
+      <div class="lesson-details-wrap">
+        <button class="btn-secondary lesson-back-btn" onclick="backToStudentQuizzes()">← العودة إلى الاختبارات</button>
+        <div class="lesson-details-card">
+          <div class="lesson-details-head">
+            <div>
+              <h1 id="quizDetailsTitle">الاختبار</h1>
+              <p id="quizDetailsInfo" class="lesson-details-desc"></p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <span id="quizDetailsTeacher" class="subject-badge">المعلم</span>
+              <span id="quizDetailsCount" class="subject-badge">0 سؤال</span>
+            </div>
+          </div>
+          <div id="quizDetailsContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- لوحة المعلم -->
+    <section id="teacherDashboard" class="hidden">
+      <div class="dashboard-wrapper">
+        <aside class="sidebar">
+          <div>
+            <h2 style="margin-bottom:25px;">لوحة المعلم</h2>
+            <ul class="nav-menu">
+              <li><button class="active" onclick="teacherPanel('overview',this)">🏠 الرئيسية</button></li>
+              <li><button onclick="teacherPanel('lessons',this)">📚 دروسي</button></li>
+              <li><button onclick="teacherPanel('students',this)">👨‍🎓 الطلاب</button></li>
+              <li><button onclick="teacherPanel('quizzes',this)">📝 الاختبارات</button></li>
+              <li><button onclick="teacherPanel('profile',this)">👤 حسابي</button></li>
+            </ul>
+          </div>
+          <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        </aside>
+        <div class="main-content">
+          <div class="topbar"><div><h2 id="teacherWelcome">مرحبًا</h2><p style="color:#64748b;">إدارة الدروس والطلاب.</p></div><div>👨‍🏫 معلم</div></div>
+
+          <div id="teacherOverview" class="dash-box">
+            <h3>ملخص المعلم</h3>
+            <div class="grid-3" style="margin-top:20px;">
+              <div class="card-box"><h3 id="teacherLessonsCount">0</h3><p>دروسك</p></div>
+              <div class="card-box"><h3 id="teacherStudentsCount">0</h3><p>طلاب</p></div>
+              <div class="card-box"><h3 id="teacherQuizzesCount">0</h3><p>اختبارات</p></div>
+            </div>
+          </div>
+
+          <div id="teacherLessons" class="dash-box hidden">
+            <h3>إضافة درس جديد</h3>
+            <form onsubmit="addLesson(event)" style="margin-top:20px;">
+              <div class="form-group"><label>عنوان الدرس</label><input id="lessonTitle" required></div>
+              <div class="form-group"><label>وصف الدرس</label><textarea id="lessonDesc" rows="3" required></textarea></div>
+              <div class="form-group"><label>الصف / الفصل الدراسي</label><select id="lessonClass" required>
+                <option value="">اختر الصف الدراسي</option>
+                <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+              </select></div>
+              <div class="form-group"><label>فيديو الشرح (اختياري)</label><input id="lessonVideo" type="file" accept="video/*"><small style="display:block;color:#64748b;margin-top:6px;">اختر فيديو من جهازك، ويفضل أن يكون حجمه مناسبًا لمساحة المتصفح.</small></div>
+              <div class="form-group"><label>ملف الدرس PDF (اختياري)</label><input id="lessonPdf" type="file" accept="application/pdf,.pdf"></div>
+              <button class="btn-submit" type="submit">إضافة الدرس مع المرفقات</button>
+            </form>
+            <hr style="margin:30px 0;border:0;border-top:1px solid #e2e8f0;">
+            <h3>دروسي الحالية</h3>
+            <div id="teacherLessonsList" style="margin-top:20px;"></div>
+          </div>
+
+          <div id="teacherStudents" class="dash-box hidden">
+            <h3>الطلاب</h3>
+            <div id="teacherStudentsList" style="margin-top:20px;"></div>
+          </div>
+
+          <div id="teacherQuizzes" class="dash-box hidden">
+            <h3>الاختبارات</h3>
+            <form onsubmit="addQuiz(event)" style="margin-top:20px;">
+              <div class="form-group"><label>اسم الاختبار</label><input id="quizTitle" required></div>
+              <div class="form-group"><label>عدد الأسئلة</label><select id="quizQuestionCount" onchange="generateQuizQuestions()" required><option value="5">5 أسئلة</option><option value="10">10 أسئلة</option><option value="20">20 سؤالًا</option></select></div>
+              <div id="quizQuestionsBuilder"></div>
+              <button class="btn-submit" type="submit">إضافة الاختبار</button>
+            </form>
+            <div id="teacherQuizzesList" style="margin-top:20px;"></div>
+          </div>
+
+          <div id="teacherProfile" class="dash-box hidden">
+            <h3>بيانات الحساب</h3>
+            <div id="teacherProfileData" style="margin-top:20px;line-height:2;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container" style="padding-top:45px;">
+      <div><h2>منصتي التعليمية</h2><p style="color:#cbd5e1;line-height:1.8;margin-top:12px;">منصة تعليمية تجريبية لإدارة التعلم بين الطلاب والمعلمين.</p></div>
+      <div><h3>روابط</h3><p style="margin-top:12px;"><a href="#" onclick="showView('home');return false;" style="color:#cbd5e1;">الرئيسية</a></p><p style="margin-top:8px;"><a href="#" onclick="showView('teachers');return false;" style="color:#cbd5e1;">المعلمون</a></p></div>
+      <div><h3>معلومات</h3><p style="color:#cbd5e1;margin-top:12px;">يمكن تطوير هذا النموذج لاحقًا وربطه بقاعدة بيانات حقيقية.</p></div>
+    </div>
+    <div class="footer-bottom">© 2026 منصتي التعليمية — جميع الحقوق محفوظة</div>
+  </footer>
+
+<script>
+const KEY_USERS = "edu_users_v1";
+const KEY_LESSONS = "edu_lessons_v1";
+const KEY_QUIZZES = "edu_quizzes_v1";
+const KEY_RESULTS = "edu_results_v1";
+const KEY_SESSION = "edu_session_v1";
+
+let users = JSON.parse(localStorage.getItem(KEY_USERS) || "null");
+let lessons = JSON.parse(localStorage.getItem(KEY_LESSONS) || "null");
+let quizzes = JSON.parse(localStorage.getItem(KEY_QUIZZES) || "null");
+let results = JSON.parse(localStorage.getItem(KEY_RESULTS) || "null");
+let currentFilter = "الكل";
+
+if (!users) {
+  users = [
+  ];
+  save(KEY_USERS, users);
+}
+if (!lessons) {
+  lessons = [
+    
+  ];
+  save(KEY_LESSONS, lessons);
+}
+if (!quizzes) {
+  quizzes = [
+  ];
+  save(KEY_QUIZZES, quizzes);
+}
+if (!results) {
+  results = [];
+  save(KEY_RESULTS, results);
+}
+
+function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+
+function allViews(){
+  return ["homeView","teachersView","aboutView","authView","studentDashboard","lessonDetailsView","quizDetailsView","teacherDashboard"];
+}
+
+function showView(view){
+  allViews().forEach(id => document.getElementById(id)?.classList.add("hidden"));
+  const target = document.getElementById(view + "View") || document.getElementById(view);
+  if(target) target.classList.remove("hidden");
+
+  document.querySelectorAll(".nav-links a").forEach(a=>a.classList.remove("active-link"));
+  if(view==="home") document.getElementById("navHome")?.classList.add("active-link");
+
+  window.scrollTo({top:0,behavior:"smooth"});
+  updateStats();
+
+  if(view==="teachers") renderTeachers();
+  if(view==="auth") switchAuth("login");
+}
+
+function switchAuth(mode){
+  const login = mode==="login";
+  document.getElementById("loginForm").classList.toggle("hidden", !login);
+  document.getElementById("registerForm").classList.toggle("hidden", login);
+  document.getElementById("loginTab").classList.toggle("active", login);
+  document.getElementById("registerTab").classList.toggle("active", !login);
+  document.getElementById("authTitle").textContent = login ? "تسجيل الدخول" : "إنشاء حساب";
+  document.getElementById("authMessage").textContent = "";
+}
+
+function register(e){
+  e.preventDefault();
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
+  const password = document.getElementById("regPassword").value;
+  const role = document.getElementById("regRole").value;
+  const subject = document.getElementById("regSubject").value;
+
+  if(users.some(u=>u.email===email)){
+    setAuthMessage("هذا البريد مستخدم بالفعل.", true);
+    return;
+  }
+  if(role==="teacher" && !subject){
+    setAuthMessage("اختر مادة المعلم.", true);
+    return;
+  }
+
+  const user = {id:"u"+Date.now(),name,email,password,role,subject:subject || "عام"};
+  users.push(user);
+  save(KEY_USERS, users);
+  localStorage.setItem(KEY_SESSION, user.id);
+  setAuthMessage("تم إنشاء الحساب بنجاح.", false);
+  setTimeout(()=>openDashboard(user), 400);
+}
+
+function login(e){
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const user = users.find(u=>u.email===email && u.password===password);
+
+  if(!user){
+    setAuthMessage("البريد الإلكتروني أو كلمة المرور غير صحيحة.", true);
+    return;
+  }
+
+  localStorage.setItem(KEY_SESSION,user.id);
+  setAuthMessage("تم تسجيل الدخول.", false);
+  setTimeout(()=>openDashboard(user),300);
+}
+
+function setAuthMessage(msg,error){
+  const el=document.getElementById("authMessage");
+  el.textContent=msg;
+  el.style.color=error ? "#dc2626" : "#16a34a";
+}
+
+function currentUser(){
+  const id=localStorage.getItem(KEY_SESSION);
+  return users.find(u=>u.id===id);
+}
+
+function openDashboard(user=currentUser()){
+  if(!user) return showView("auth");
+  document.getElementById("authButtons").innerHTML =
+    '<a class="btn-login" href="#" onclick="openDashboard();return false;">لوحتي</a>' +
+    '<a class="btn-signup" href="#" onclick="logout();return false;">خروج</a>';
+
+  if(user.role==="teacher"){
+    showView("teacherDashboard");
+    refreshTeacher();
+  }else{
+    showView("studentDashboard");
+    refreshStudent();
+  }
+}
+
+function logout(){
+  localStorage.removeItem(KEY_SESSION);
+  document.getElementById("authButtons").innerHTML =
+    '<a class="btn-login" href="#" onclick="showView(\'auth\');return false;">تسجيل الدخول</a>' +
+    '<a class="btn-signup" href="#" onclick="showView(\'auth\');return false;">إنشاء حساب</a>';
+  showView("home");
+}
+
+function updateStats(){
+  document.getElementById("studentCount").textContent = users.filter(u=>u.role==="student").length;
+  document.getElementById("teacherCount").textContent = users.filter(u=>u.role==="teacher").length;
+  document.getElementById("lessonCount").textContent = lessons.length;
+}
+
+function setFilter(filter,button){
+  currentFilter=filter;
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+  button.classList.add("active");
+  renderTeachers();
+}
+
+function renderTeachers(){
+  const grid=document.getElementById("teachersGrid");
+  if(!grid) return;
+  const search=(document.getElementById("teacherSearch")?.value || "").trim().toLowerCase();
+  const teachers=users.filter(u=>{
+    if(u.role!=="teacher") return false;
+    const matchFilter=currentFilter==="الكل" || u.subject===currentFilter;
+    const matchSearch=!search || u.name.toLowerCase().includes(search) || u.subject.toLowerCase().includes(search);
+    return matchFilter && matchSearch;
+  });
+
+  if(!teachers.length){
+    grid.innerHTML='<div class="card-box" style="grid-column:1/-1;"><h3>لا توجد نتائج</h3><p style="margin-top:10px;color:#64748b;">جرّب البحث بكلمة أخرى.</p></div>';
+    return;
+  }
+
+  grid.innerHTML=teachers.map(t=>`
+    <div class="card-box">
+      <div class="teacher-avatar">${escapeHtml(t.name.charAt(0))}</div>
+      <h3>${escapeHtml(t.name)}</h3>
+      <span class="subject-badge">${escapeHtml(t.subject)}</span>
+      <p style="color:#64748b;line-height:1.7;margin:10px 0;">معلم على منصة التعليم.</p>
+      <button class="btn-primary" style="padding:10px 20px;" onclick="teacherDetails('${t.id}')">عرض الدروس</button>
+    </div>
+  `).join("");
+}
+
+function teacherDetails(id){
+  const t=users.find(u=>u.id===id);
+  const ls=lessons.filter(l=>l.teacherId===id);
+  alert(`${t.name}\nالمادة: ${t.subject}\nعدد الدروس: ${ls.length}`);
+}
+
+function studentPanel(panel,btn){
+  ["studentOverview","studentLessons","studentQuizzes","studentGrades","studentProfile"].forEach(id=>document.getElementById(id)?.classList.add("hidden"));
+  document.getElementById("student"+capitalize(panel))?.classList.remove("hidden");
+  document.querySelectorAll("#studentDashboard .nav-menu button").forEach(b=>b.classList.remove("active"));
+  btn?.classList.add("active");
+}
+
+function teacherPanel(panel,btn){
+  ["teacherOverview","teacherLessons","teacherStudents","teacherQuizzes","teacherProfile"].forEach(id=>document.getElementById(id)?.classList.add("hidden"));
+  document.getElementById("teacher"+capitalize(panel))?.classList.remove("hidden");
+  document.querySelectorAll("#teacherDashboard .nav-menu button").forEach(b=>b.classList.remove("active"));
+  btn?.classList.add("active");
+}
+
+function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+function refreshStudent(){
+  const u=currentUser();
+  if(!u) return;
+  document.getElementById("studentWelcome").textContent="مرحبًا، "+u.name;
+  const relevantLessons=lessons.filter(l=>l.subject===u.subject || u.subject==="عام");
+  const relevantQuizzes=quizzes.filter(q=>{
+    const teacher=users.find(t=>t.id===q.teacherId);
+    return teacher && (teacher.subject===u.subject || u.subject==="عام");
+  });
+  const myResults=results.filter(r=>r.studentId===u.id);
+  const avg=myResults.length ? Math.round(myResults.reduce((a,b)=>a+b.score,0)/myResults.length) : 0;
+
+  document.getElementById("myLessonsCount").textContent=relevantLessons.length;
+  document.getElementById("myQuizCount").textContent=relevantQuizzes.length;
+  document.getElementById("myGrade").textContent=avg+"%";
+
+  document.getElementById("studentLessonsList").innerHTML = relevantLessons.length ?
+    relevantLessons.map(l=>`<div class="dash-box" style="cursor:pointer;transition:transform .2s,box-shadow .2s;" onclick="openLessonDetails('${l.id}')" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 25px rgba(15,23,42,.08)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;">
+        <div style="flex:1;min-width:220px;"><h3>${escapeHtml(l.title)}</h3><p style="color:#64748b;margin-top:7px;">${escapeHtml(l.desc)}</p><p style="color:#3157d5;font-weight:700;margin-top:10px;">👨‍🏫 المعلم: ${escapeHtml((users.find(t=>t.id===l.teacherId)?.name) || "معلم غير معروف")}</p></div>
+        <span class="subject-badge">${escapeHtml(l.subject)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;">
+        <span style="color:#64748b;font-size:14px;">${l.videoName ? "🎬 فيديو متاح" : "🎬 لا يوجد فيديو"}　${l.pdfName ? "📄 PDF متاح" : "📄 لا يوجد PDF"}</span>
+        <button class="btn-primary" style="padding:9px 16px;" onclick="event.stopPropagation();openLessonDetails('${l.id}')">فتح الدرس ←</button>
+      </div>
+    </div>`).join("") :
+    "<p>لا توجد دروس متاحة حاليًا.</p>";
+
+  document.getElementById("studentQuizzesList").innerHTML = relevantQuizzes.length ?
+    relevantQuizzes.map(q=>{const qs=getQuizQuestions(q); return `<div class="item-row" style="cursor:pointer;" onclick="openQuizDetails('${q.id}')"><div><strong>${escapeHtml(q.title)}</strong><p style="margin-top:5px;color:#64748b;">${qs.length} سؤال — اضغط لبدء الاختبار</p>
+           <p style="margin-top:7px;color:#3157d5;font-weight:700;">👨‍🏫 المعلم: ${escapeHtml((users.find(t=>t.id===q.teacherId)||{}).name || "معلم غير معروف")}</p></div><button class="btn-primary" style="padding:8px 15px;" onclick="event.stopPropagation();openQuizDetails('${q.id}')">حل الاختبار ←</button></div>`}).join("") :
+    "<p>لا توجد اختبارات متاحة.</p>";
+
+  document.getElementById("studentGradesList").innerHTML = myResults.length ?
+    myResults.map(r=>{
+      const quiz=quizzes.find(q=>q.id===r.quizId);
+      const teacher=quiz ? users.find(t=>t.id===quiz.teacherId) : null;
+      return `<div class="item-row">
+        <div><strong>${escapeHtml(r.quizTitle)}</strong>
+          <p style="margin-top:6px;color:#3157d5;font-weight:700;">👨‍🏫 المعلم: ${escapeHtml(teacher?.name || "معلم غير معروف")}</p>
+          <p style="margin-top:4px;color:#64748b;font-size:13px;">${r.correct!=null ? "الإجابات الصحيحة: "+r.correct+" من "+r.total : "نتيجة الاختبار"}</p>
+        </div>
+        <strong>${r.score}%</strong>
+      </div>`;
+    }).join("") :
+    "<p>لم تقم بحل أي اختبار بعد.</p>";
+
+  document.getElementById("studentProfileData").innerHTML =
+    `<strong>الاسم:</strong> ${escapeHtml(u.name)}<br>
+     <strong>البريد:</strong> ${escapeHtml(u.email)}<br>
+     <strong>النوع:</strong> طالب<br>
+     <strong>المادة:</strong> ${escapeHtml(u.subject)}`;
+}
+
+let lessonObjectUrls=[];
+
+function clearLessonObjectUrls(){
+  lessonObjectUrls.forEach(url=>{try{URL.revokeObjectURL(url);}catch(e){}});
+  lessonObjectUrls=[];
+}
+
+async function openLessonDetails(id){
+  const u=currentUser();
+  const lesson=lessons.find(l=>l.id===id);
+  if(!u || u.role!=="student" || !lesson) return;
+
+  clearLessonObjectUrls();
+  showView("lessonDetails");
+  document.getElementById("lessonDetailsTitle").textContent=lesson.title;
+  const lessonTeacher=users.find(t=>t.id===lesson.teacherId);
+  document.getElementById("lessonDetailsTeacher").textContent="👨‍🏫 المعلم: "+(lessonTeacher?.name || "معلم غير معروف");
+  document.getElementById("lessonDetailsSubject").textContent=lesson.subject;
+  document.getElementById("lessonDetailsDesc").textContent=lesson.desc || "لا يوجد وصف لهذا الدرس.";
+
+  const content=document.getElementById("lessonDetailsContent");
+  content.innerHTML='<div class="lesson-empty">جارٍ تحميل فيديو وملف الدرس...</div>';
+
+  try{
+    const files=await getLessonFiles(id);
+    let html="";
+
+    if(files.video){
+      const videoUrl=URL.createObjectURL(files.video);
+      lessonObjectUrls.push(videoUrl);
+      html+=`<div class="lesson-media-section">
+        <h3>🎬 فيديو الشرح</h3>
+        <video class="lesson-video-player" controls preload="metadata">
+          <source src="${videoUrl}" type="${escapeHtml(files.video.type||"video/mp4")}">
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+      </div>`;
+    }else{
+      html+='<div class="lesson-media-section"><h3>🎬 فيديو الشرح</h3><div class="lesson-empty">لا يوجد فيديو مرفق لهذا الدرس.</div></div>';
+    }
+
+    if(files.pdf){
+      const pdfUrl=URL.createObjectURL(files.pdf);
+      lessonObjectUrls.push(pdfUrl);
+      html+=`<div class="lesson-media-section">
+        <h3>📄 ملف PDF الخاص بالدرس</h3>
+        <div class="lesson-actions">
+          <a class="btn-primary" style="text-decoration:none;display:inline-block;" href="${pdfUrl}" target="_blank" rel="noopener">فتح PDF</a>
+          <a class="btn-secondary" style="text-decoration:none;display:inline-block;" href="${pdfUrl}" download="${escapeHtml(lesson.pdfName||"lesson.pdf")}">تحميل PDF</a>
+        </div>
+        <iframe class="lesson-pdf-frame" title="معاينة ملف الدرس PDF" src="${pdfUrl}"></iframe>
+      </div>`;
+    }else{
+      html+='<div class="lesson-media-section"><h3>📄 ملف PDF الخاص بالدرس</h3><div class="lesson-empty">لا يوجد ملف PDF مرفق لهذا الدرس.</div></div>';
+    }
+
+    content.innerHTML=html;
+  }catch(err){
+    console.error(err);
+    content.innerHTML='<div class="lesson-empty">تعذر تحميل مرفقات الدرس على هذا المتصفح.</div>';
+  }
+}
+
+function backToStudentLessons(){
+  clearLessonObjectUrls();
+  showView("studentDashboard");
+  refreshStudent();
+  studentPanel("lessons");
+  document.querySelectorAll("#studentDashboard .nav-menu button").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll("#studentDashboard .nav-menu button")[1]?.classList.add("active");
+}
+
+function getQuizQuestions(q){
+  if(Array.isArray(q.questions) && q.questions.length) return q.questions;
+  if(q.question && q.answer) return [{question:q.question,answer:q.answer}];
+  return [];
+}
+
+function generateQuizQuestions(existingQuestions){
+  const count=parseInt(document.getElementById("quizQuestionCount")?.value || "5",10);
+  const box=document.getElementById("quizQuestionsBuilder");
+  if(!box) return;
+  const old=existingQuestions || [];
+  box.innerHTML=Array.from({length:count},(_,i)=>{
+    const item=old[i] || {};
+    return `<div class="quiz-question-box">
+      <h3>السؤال ${i+1}</h3>
+      <div class="form-group"><label>نص السؤال</label><textarea id="newQuizQuestion${i}" rows="3" required>${escapeHtml(item.question||"")}</textarea></div>
+      <div class="form-group"><label>الإجابة الصحيحة</label><input id="newQuizAnswer${i}" required value="${escapeHtml(item.answer||"")}"></div>
+    </div>`;
+  }).join("");
+}
+
+function openQuizDetails(id){
+  const q=quizzes.find(x=>x.id===id);
+  const u=currentUser();
+  if(!q || !u || u.role!=="student") return;
+  const questions=getQuizQuestions(q);
+  showView("quizDetails");
+  document.getElementById("quizDetailsTitle").textContent=q.title;
+  const quizTeacher=users.find(t=>t.id===q.teacherId);
+  document.getElementById("quizDetailsTeacher").textContent="👨‍🏫 المعلم: "+(quizTeacher?.name || "معلم غير معروف");
+  document.getElementById("quizDetailsInfo").textContent="أجب عن جميع الأسئلة ثم اضغط إرسال الإجابات.";
+  document.getElementById("quizDetailsCount").textContent=questions.length+" سؤال";
+  const content=document.getElementById("quizDetailsContent");
+  if(!questions.length){ content.innerHTML='<div class="lesson-empty">هذا الاختبار لا يحتوي على أسئلة.</div>'; return; }
+  content.innerHTML=`<form onsubmit="submitQuiz(event,'${q.id}')">
+    ${questions.map((item,i)=>`<div class="quiz-question-box">
+      <h3>السؤال ${i+1}</h3>
+      <p>${escapeHtml(item.question)}</p>
+      <input id="quizAnswerInput${i}" type="text" required placeholder="اكتب إجابتك هنا" autocomplete="off">
+    </div>`).join("")}
+    <button class="btn-primary" type="submit">إرسال الإجابات</button>
+  </form>`;
+}
+
+function submitQuiz(e,id){
+  e.preventDefault();
+  const q=quizzes.find(x=>x.id===id);
+  const u=currentUser();
+  if(!q || !u) return;
+  const questions=getQuizQuestions(q);
+  let correctCount=0;
+  questions.forEach((item,i)=>{
+    const input=document.getElementById("quizAnswerInput"+i);
+    const answer=(input?.value || "").trim().toLowerCase();
+    const correct=answer===String(item.answer||"").trim().toLowerCase();
+    if(correct) correctCount++;
+  });
+  const score=questions.length ? Math.round((correctCount/questions.length)*100) : 0;
+  results.push({id:"r"+Date.now(),studentId:u.id,quizId:q.id,quizTitle:q.title,score,correct:correctCount,total:questions.length});
+  save(KEY_RESULTS,results);
+  document.getElementById("quizDetailsContent").innerHTML=`<div class="lesson-empty" style="text-align:center;padding:30px;">
+    <div style="font-size:48px;margin-bottom:10px;">${score>=50 ? "🎉" : "📚"}</div>
+    <h2>${score>=50 ? "أحسنت! تم إرسال الاختبار." : "تم إرسال الاختبار."}</h2>
+    <strong style="font-size:28px;display:block;margin-top:12px;color:#2563eb;">الدرجة: ${score}%</strong>
+    <p style="margin-top:10px;color:#64748b;">الإجابات الصحيحة: ${correctCount} من ${questions.length}</p>
+    <button class="btn-primary" style="margin-top:18px;" onclick="backToStudentQuizzes()">العودة إلى الاختبارات</button>
+  </div>`;
+  refreshStudent();
+}
+
+function backToStudentQuizzes(){
+  showView("studentDashboard");
+  refreshStudent();
+  studentPanel("quizzes");
+  document.querySelectorAll("#studentDashboard .nav-menu button").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll("#studentDashboard .nav-menu button")[2]?.classList.add("active");
+}
+
+function refreshTeacher(){
+  const u=currentUser();
+  if(!u) return;
+  document.getElementById("teacherWelcome").textContent="مرحبًا، "+u.name;
+  const myLessons=lessons.filter(l=>l.teacherId===u.id);
+  const myQuizzes=quizzes.filter(q=>q.teacherId===u.id);
+  const students=users.filter(s=>s.role==="student");
+  document.getElementById("teacherLessonsCount").textContent=myLessons.length;
+  document.getElementById("teacherQuizzesCount").textContent=myQuizzes.length;
+  document.getElementById("teacherStudentsCount").textContent=students.length;
+
+  document.getElementById("teacherLessonsList").innerHTML=myLessons.length ?
+    myLessons.map(l=>`<div class="item-row"><div><strong>${escapeHtml(l.title)}</strong><p style="color:#64748b;margin-top:5px;">${escapeHtml(l.desc)}</p><p style="color:#3157d5;font-weight:700;margin-top:7px;">🎓 الصف: ${escapeHtml(l.className || "غير محدد")}</p><p style="color:#64748b;margin-top:7px;font-size:13px;">${l.videoName?"🎬 فيديو: "+escapeHtml(l.videoName):"لا يوجد فيديو"}　${l.pdfName?"📄 PDF: "+escapeHtml(l.pdfName):"لا يوجد PDF"}</p></div><button class="btn-secondary" style="padding:7px 12px;" onclick="deleteLesson('${l.id}')">حذف</button></div>`).join("") :
+    "<p>لم تضف دروسًا بعد.</p>";
+
+  document.getElementById("teacherStudentsList").innerHTML=students.map(s=>{
+    const studentResults=results.filter(r=>r.studentId===s.id);
+    return `<div class="item-row"><div><strong>${escapeHtml(s.name)}</strong><p style="color:#64748b;">${escapeHtml(s.email)} — ${escapeHtml(s.subject)}</p></div><strong>${studentResults.length} نتيجة</strong></div>`;
+  }).join("");
+
+  document.getElementById("teacherQuizzesList").innerHTML=myQuizzes.length ?
+    myQuizzes.map(q=>{const qs=getQuizQuestions(q); return `<div class="item-row"><div><strong>${escapeHtml(q.title)}</strong><p style="color:#64748b;">${qs.length} سؤال</p></div><span class="subject-badge">اختبار</span></div>`}).join("") :
+    "<p>لم تضف اختبارات بعد.</p>";
+
+  document.getElementById("teacherProfileData").innerHTML =
+    `<strong>الاسم:</strong> ${escapeHtml(u.name)}<br>
+     <strong>البريد:</strong> ${escapeHtml(u.email)}<br>
+     <strong>النوع:</strong> معلم<br>
+     <strong>المادة:</strong> ${escapeHtml(u.subject)}`;
+}
+
+// حفظ ملفات الفيديو وPDF في IndexedDB حتى تبقى بعد إغلاق الصفحة على نفس المتصفح.
+const LESSON_FILES_DB = "edu_lesson_files_db";
+function openLessonFilesDB(){
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open(LESSON_FILES_DB,1);
+    request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains("files"))db.createObjectStore("files");};
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+async function saveLessonFiles(id, video, pdf){
+  const db=await openLessonFilesDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction("files","readwrite");
+    tx.objectStore("files").put({video:video||null,pdf:pdf||null},id);
+    tx.oncomplete=()=>{db.close();resolve();};
+    tx.onerror=()=>{db.close();reject(tx.error);};
+  });
+}
+async function getLessonFiles(id){
+  const db=await openLessonFilesDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction("files","readonly");
+    const req=tx.objectStore("files").get(id);
+    req.onsuccess=()=>{const value=req.result||{};db.close();resolve(value);};
+    req.onerror=()=>{db.close();reject(req.error);};
+  });
+}
+async function deleteLessonFiles(id){
+  try{const db=await openLessonFilesDB();await new Promise((resolve,reject)=>{const tx=db.transaction("files","readwrite");tx.objectStore("files").delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();}catch(err){console.error(err);}
+}
+function formatFileSize(bytes){return bytes<1024*1024?(bytes/1024).toFixed(0)+" KB":(bytes/1024/1024).toFixed(1)+" MB";}
+async function addLesson(e){
+  e.preventDefault();
+  const u=currentUser();
+  if(!u || u.role!=="teacher") return;
+  const video=document.getElementById("lessonVideo").files[0]||null;
+  const pdf=document.getElementById("lessonPdf").files[0]||null;
+  if(video && !video.type.startsWith("video/")){alert("من فضلك اختر ملف فيديو صحيحًا.");return;}
+  if(pdf && pdf.type!=="application/pdf" && !pdf.name.toLowerCase().endsWith(".pdf")){alert("من فضلك اختر ملف PDF صحيحًا.");return;}
+  const id="l"+Date.now();
+  try{
+    await saveLessonFiles(id,video,pdf);
+    lessons.push({id,teacherId:u.id,title:document.getElementById("lessonTitle").value.trim(),desc:document.getElementById("lessonDesc").value.trim(),subject:u.subject,className:document.getElementById("lessonClass").value,videoName:video?.name||"",pdfName:pdf?.name||""});
+    save(KEY_LESSONS,lessons);
+    e.target.reset();
+    refreshTeacher();
+    updateStats();
+    alert("تمت إضافة الدرس ومرفقاته بنجاح.");
+  }catch(err){console.error(err);alert("تعذر حفظ الملفات. قد تكون مساحة المتصفح غير كافية؛ جرّب ملفًا أصغر.");}
+}
+
+async function deleteLesson(id){
+  if(!confirm("هل تريد حذف هذا الدرس؟")) return;
+  lessons=lessons.filter(l=>l.id!==id);
+  await deleteLessonFiles(id);
+  save(KEY_LESSONS,lessons);
+  refreshTeacher();
+  updateStats();
+}
+
+function addQuiz(e){
+  e.preventDefault();
+  const u=currentUser();
+  if(!u || u.role!=="teacher") return;
+  const count=parseInt(document.getElementById("quizQuestionCount").value,10);
+  const questions=[];
+  for(let i=0;i<count;i++){
+    const question=document.getElementById("newQuizQuestion"+i).value.trim();
+    const answer=document.getElementById("newQuizAnswer"+i).value.trim();
+    if(!question || !answer){ alert("يرجى كتابة السؤال والإجابة الصحيحة لكل الأسئلة."); return; }
+    questions.push({question,answer});
+  }
+  quizzes.push({id:"q"+Date.now(),teacherId:u.id,title:document.getElementById("quizTitle").value.trim(),questions});
+  save(KEY_QUIZZES,quizzes);
+  e.target.reset();
+  document.getElementById("quizQuestionCount").value="5";
+  generateQuizQuestions();
+  refreshTeacher();
+  alert("تمت إضافة الاختبار بـ "+questions.length+" أسئلة.");
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+(function init(){
+  generateQuizQuestions();
+  updateStats();
+  const u=currentUser();
+  if(u){
+    document.getElementById("authButtons").innerHTML =
+      '<a class="btn-login" href="#" onclick="openDashboard();return false;">لوحتي</a>' +
+      '<a class="btn-signup" href="#" onclick="logout();return false;">خروج</a>';
+  }
+  showView("home");
+})();
+</script>
+</body>
+</html>
